@@ -2,10 +2,10 @@ import random
 from typing import List
 from re import finditer
 
-word_list = ['train', 'crisp', 'tacos', 'click', 'words', 'euros', 'trite', 'fluff', 'power']
+word_list = ['python', 'sports', 'train', 'crisp', 'tacos', 'click', 'words', 'euros', 'trite', 'fluff', 'power']
 
 
-def get_word():
+def get_word() -> str:
     return word_list[random.randint(0, len(word_list) - 1)]
 
 

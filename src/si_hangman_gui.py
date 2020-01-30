@@ -26,13 +26,23 @@ class HangManGUI(QWidget):
     WIDTH = 650
     HEIGHT = 450
 
+    MAX_LIVES = 6
+
+    DRAW_CALLS = (
+        lambda qp: qp.drawEllipse(60, 60, 30, 30),
+        lambda qp: qp.drawLine(75, 90, 75, 135),
+        lambda qp: qp.drawLine(75, 105, 50, 100),
+        lambda qp: qp.drawLine(75, 105, 100, 100),
+        lambda qp: qp.drawLine(75, 135, 50, 160),
+        lambda qp: qp.drawLine(75, 135, 100, 160)
+    )
+
     def __init__(self):
         self.buttonList = []
         super(HangManGUI, self).__init__()
 
         self.word = get_word()
-        self.lives = 6
-        self.gameState = 0
+        self.lives = self.MAX_LIVES
         self.guessed_letters = [""] * len(self.word)
         self.still_playing = True
         self.victory = False
@@ -47,24 +57,8 @@ class HangManGUI(QWidget):
         self.show()
 
     def paint_body(self, qp: QPainter):
-        # head
-        if self.lives < 6:
-            qp.drawEllipse(60, 60, 30, 30)
-        # body
-        if self.lives < 5:
-            qp.drawLine(75, 90, 75, 135)
-        # left arm
-        if self.lives < 4:
-            qp.drawLine(75, 105, 50, 100)
-        # right arm
-        if self.lives < 3:
-            qp.drawLine(75, 105, 100, 100)
-        # left leg
-        if self.lives < 2:
-            qp.drawLine(75, 135, 50, 160)
-        # right leg
-        if self.lives < 1:
-            qp.drawLine(75, 135, 100, 160)
+        for i in range(self.MAX_LIVES-self.lives):
+            self.DRAW_CALLS[i](qp)
 
     def paint_hangman(self, qp: QPainter):
         pen = QPen(Qt.black, 3, Qt.SolidLine)
@@ -73,7 +67,6 @@ class HangManGUI(QWidget):
         paint_gallows(qp)
         self.paint_body(qp)
 
-        # Text
         for i in range(len(self.guessed_letters)):
             add = 50 * i
             qp.drawText(40 + add, 240, self.guessed_letters[i])
@@ -92,7 +85,6 @@ class HangManGUI(QWidget):
         else:
             qp.drawText(250, 200, "You Lose")
 
-
     def paintEvent(self, event):
         qp = QPainter()
         qp.begin(self)
@@ -103,7 +95,7 @@ class HangManGUI(QWidget):
 
         qp.end()
 
-    def updateGame(self):
+    def update_game(self):
         if "".join(self.guessed_letters) == self.word:
             self.finish_game(True)
         elif not self.lives:
@@ -120,14 +112,14 @@ class HangManGUI(QWidget):
 
     def on_key(self, key):
         if self.still_playing:
-            if key in self.alphabet:
+            if key.isalpha():
                 if make_guess(self.word, key):
                     for pos in find_all_elements(self.word, key):
                         self.guessed_letters[pos] = key
                 else:
                     self.lives -= 1
 
-                self.updateGame()
+                self.update_game()
                 self.update()
 
     def finish_game(self, win: bool):
