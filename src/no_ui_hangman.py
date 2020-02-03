@@ -1,8 +1,8 @@
 import random
-from msvcrt import getch
-import os
 from typing import List
-from re import finditer
+from utils import clear_screen
+from utils import get_key
+from utils import get_random_number
 
 WORD_LIST = ("python", "sports", "interactive")
 
@@ -26,19 +26,19 @@ def paint_hangman():
     global ABS
     global LEFT_LEG
     global RIGHT_LEG
-    HANGMAN_DRAW = ("_________",
+    hangman_draw = ("_________",
                     "|       |",
                     f"|       {HEAD}",
                     f"|      {LEFT_ARM}{BODY}{RIGHT_ARM}",
                     f"|       {ABS}",
                     f"|      {LEFT_LEG} {RIGHT_LEG}",
                     "|_________")
-    for i in HANGMAN_DRAW:
+    for i in hangman_draw:
         print(i)
 
 
 def get_word() -> str:
-    return WORD_LIST[random.randint(0, len(WORD_LIST) - 1)]
+    return WORD_LIST[get_random_number(0, len(WORD_LIST) - 1)]
 
 
 def paint_letters(guessed: List[str]):
@@ -46,11 +46,7 @@ def paint_letters(guessed: List[str]):
 
 
 def find_all_elements(word: str, letter: str) -> List[int]:
-    pos = []
-    for i in range(len(word)):
-        if word[i] == letter:
-            pos.append(i)
-    return pos
+    return [pos for pos in range(len(word)) if word[pos] == letter]
 
 
 def victory(guessed: List[str], word: str):
@@ -62,58 +58,73 @@ def lost_life(lives: int):
     if lives == 6:
         global HEAD
         HEAD = "O"
-    if lives == 5:
+    elif lives == 5:
         global BODY
         BODY = "|"
-    if lives == 4:
+    elif lives == 4:
         global LEFT_ARM
         LEFT_ARM = "\\"
-    if lives == 3:
+    elif lives == 3:
         global RIGHT_ARM
         RIGHT_ARM = "/"
-    if lives == 2:
+    elif lives == 2:
         global ABS
         ABS = "|"
-    if lives == 1:
+    elif lives == 1:
         global LEFT_LEG
         LEFT_LEG = "/"
-    if lives == 0:
+    elif lives == 0:
         global RIGHT_LEG
         RIGHT_LEG = "\\"
 
     return lives
 
 
-def main():
-    word = get_word()
-    lives = MAX_LIVES
-    guessed = ["_"]*len(word)
-
-    while lives > 0:
-        paint_letters(guessed)
-        paint_hangman()
-        key = getch()
-        key = str(key.lower(), "utf-8")
-        if not key.isalpha():
-            lost_life(lives)
-        else:
-            positions = find_all_elements(word, key)
-            if not positions:
-                lives = lost_life(lives)
-            else:
-                for i in positions:
-                    guessed[i] = key
-
-        if victory(guessed, word):
-            print("You WIN!!!!")
-            paint_letters(guessed)
-            exit(0)
-
-        os.system('cls')
-
+def paint(guessed: List[str]):
     paint_letters(guessed)
     paint_hangman()
-    print("You LOSE!!!!")
+
+
+def update(word: str, lives: int, guessed: List[str]) -> int:
+    paint(guessed)
+    key = get_key()
+    if not key.isalpha():
+        lost_life(lives)
+    else:
+        positions = find_all_elements(word, key)
+        if not positions:
+            lives = lost_life(lives)
+        else:
+            for i in positions:
+                guessed[i] = key
+
+    clear_screen()
+
+    return lives
+
+
+def end_game(word: str, lives: int, guessed: List[str]):
+    if victory(guessed, word):
+        print("You WIN!!!!")
+    else:
+        print("You LOSE!!!!")
+    paint(guessed)
+
+
+def init():
+    word = get_word()
+    return word, MAX_LIVES, ["_"]*len(word)
+
+
+def main():
+    word, lives, guessed = init()
+
+    while lives > 0:
+        lives = update(word, lives, guessed)
+        if victory(guessed, word):
+            break
+
+    end_game(word, lives, guessed)
 
 
 if __name__ == "__main__":
