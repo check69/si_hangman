@@ -1,19 +1,17 @@
 import random
 from typing import List
 from re import finditer
+from utils import get_random_number
 
-word_list = ['python', 'sports', 'train', 'crisp', 'tacos', 'click', 'words', 'euros', 'trite', 'fluff', 'power']
+WORD_LIST = ['python', 'sports', 'train', 'crisp', 'tacos', 'click', 'words', 'euros', 'trite', 'fluff', 'power']
 
 
 def get_word() -> str:
-    return word_list[random.randint(0, len(word_list) - 1)]
+    return WORD_LIST[get_random_number(0, len(WORD_LIST) - 1)]
 
 
 def make_guess(word: str, letter: str) -> bool:
-    if letter in word:
-        return True
-
-    return False
+    return letter in word
 
 
 def find_all_elements(word: str, letter: str) -> List[int]:

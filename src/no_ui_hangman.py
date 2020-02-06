@@ -9,31 +9,18 @@ WORD_LIST = ("python", "sports", "interactive")
 MAX_LIVES = 7
 
 
-HEAD = ""
-BODY = ""
-RIGHT_ARM = ""
-LEFT_ARM = " "
-ABS = ""
-RIGHT_LEG = ""
-LEFT_LEG = ""
+HANGMAN = ["_________",
+           "|       |",
+           "| ",
+           "|",
+           "|",
+           "|",
+           "|_________"
+           ]
 
 
 def paint_hangman():
-    global HEAD
-    global BODY
-    global LEFT_ARM
-    global RIGHT_ARM
-    global ABS
-    global LEFT_LEG
-    global RIGHT_LEG
-    hangman_draw = ("_________",
-                    "|       |",
-                    f"|       {HEAD}",
-                    f"|      {LEFT_ARM}{BODY}{RIGHT_ARM}",
-                    f"|       {ABS}",
-                    f"|      {LEFT_LEG} {RIGHT_LEG}",
-                    "|_________")
-    for i in hangman_draw:
+    for i in HANGMAN:
         print(i)
 
 
@@ -53,29 +40,35 @@ def victory(guessed: List[str], word: str):
     return "".join(guessed) == word
 
 
+HANGMAN = ["_________",
+           "|       |",
+           "| ",
+           "|",
+           "|",
+           "|",
+           "|_________"
+           ]
+
+
+def paint_hangman():
+    for i in HANGMAN:
+        print(i)
 def lost_life(lives: int):
     lives -= 1
     if lives == 6:
-        global HEAD
-        HEAD = "O"
+        HANGMAN[2] = "|       O"
     elif lives == 5:
-        global BODY
-        BODY = "|"
+        HANGMAN[3] = "|       |"
     elif lives == 4:
-        global LEFT_ARM
-        LEFT_ARM = "\\"
+        HANGMAN[3] = "|      \\|"
     elif lives == 3:
-        global RIGHT_ARM
-        RIGHT_ARM = "/"
+        HANGMAN[3] = "|      \\|/"
     elif lives == 2:
-        global ABS
-        ABS = "|"
+        HANGMAN[4] = "|       |"
     elif lives == 1:
-        global LEFT_LEG
-        LEFT_LEG = "/"
+        HANGMAN[5] = "|      /"
     elif lives == 0:
-        global RIGHT_LEG
-        RIGHT_LEG = "\\"
+        HANGMAN[5] = "|      / \\"
 
     return lives
 
