@@ -18,6 +18,16 @@ HANGMAN = ["_________",
            "|_________"
            ]
 
+matches = {
+    6: (2, "|       O"),
+    5: (3, "|       |"),
+    4: (3, "|      \\|"),
+    3: (3, "|      \\|/"),
+    2: (4, "|       |"),
+    1: (5, "|      /"),
+    0: (5, "|      / \\"),
+}
+
 
 def paint_hangman():
     for i in HANGMAN:
@@ -42,15 +52,6 @@ def victory(guessed: List[str], word: str):
 
 def lost_life(lives: int):
     lives -= 1
-    matches = {
-        6: (2, "|       O"),
-        5: (3, "|       |"),
-        4: (3, "|      \\|"),
-        3: (3, "|      \\|/"),
-        2: (4, "|       |"),
-        1: (5, "|      /"),
-        0: (5, "|      / \\"),
-    }
     i, v = matches.get(lives)
     HANGMAN[i] = v
     return lives
