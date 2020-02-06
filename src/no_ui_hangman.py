@@ -40,36 +40,19 @@ def victory(guessed: List[str], word: str):
     return "".join(guessed) == word
 
 
-HANGMAN = ["_________",
-           "|       |",
-           "| ",
-           "|",
-           "|",
-           "|",
-           "|_________"
-           ]
-
-
-def paint_hangman():
-    for i in HANGMAN:
-        print(i)
 def lost_life(lives: int):
     lives -= 1
-    if lives == 6:
-        HANGMAN[2] = "|       O"
-    elif lives == 5:
-        HANGMAN[3] = "|       |"
-    elif lives == 4:
-        HANGMAN[3] = "|      \\|"
-    elif lives == 3:
-        HANGMAN[3] = "|      \\|/"
-    elif lives == 2:
-        HANGMAN[4] = "|       |"
-    elif lives == 1:
-        HANGMAN[5] = "|      /"
-    elif lives == 0:
-        HANGMAN[5] = "|      / \\"
-
+    matches = {
+        6: (2, "|       O"),
+        5: (3, "|       |"),
+        4: (3, "|      \\|"),
+        3: (3, "|      \\|/"),
+        2: (4, "|       |"),
+        1: (5, "|      /"),
+        0: (5, "|      / \\"),
+    }
+    i, v = matches.get(lives)
+    HANGMAN[i] = v
     return lives
 
 
