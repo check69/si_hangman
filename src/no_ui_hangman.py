@@ -88,9 +88,7 @@ def paint(guessed: List[str]):
 def update(word: str, lives: int, guessed: List[str]) -> int:
     paint(guessed)
     key = get_key()
-    if not key.isalpha():
-        lost_life(lives)
-    else:
+    if key.isalpha():
         positions = find_all_elements(word, key)
         if not positions:
             lives = lost_life(lives)
