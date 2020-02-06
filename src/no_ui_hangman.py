@@ -9,31 +9,28 @@ WORD_LIST = ("python", "sports", "interactive")
 MAX_LIVES = 7
 
 
-HEAD = ""
-BODY = ""
-RIGHT_ARM = ""
-LEFT_ARM = " "
-ABS = ""
-RIGHT_LEG = ""
-LEFT_LEG = ""
+HANGMAN = ["_________",
+           "|       |",
+           "| ",
+           "|",
+           "|",
+           "|",
+           "|_________"
+           ]
+
+matches = {
+    6: (2, "|       O"),
+    5: (3, "|       |"),
+    4: (3, "|      \\|"),
+    3: (3, "|      \\|/"),
+    2: (4, "|       |"),
+    1: (5, "|      /"),
+    0: (5, "|      / \\"),
+}
 
 
 def paint_hangman():
-    global HEAD
-    global BODY
-    global LEFT_ARM
-    global RIGHT_ARM
-    global ABS
-    global LEFT_LEG
-    global RIGHT_LEG
-    hangman_draw = ("_________",
-                    "|       |",
-                    f"|       {HEAD}",
-                    f"|      {LEFT_ARM}{BODY}{RIGHT_ARM}",
-                    f"|       {ABS}",
-                    f"|      {LEFT_LEG} {RIGHT_LEG}",
-                    "|_________")
-    for i in hangman_draw:
+    for i in HANGMAN:
         print(i)
 
 
@@ -55,28 +52,8 @@ def victory(guessed: List[str], word: str):
 
 def lost_life(lives: int):
     lives -= 1
-    if lives == 6:
-        global HEAD
-        HEAD = "O"
-    elif lives == 5:
-        global BODY
-        BODY = "|"
-    elif lives == 4:
-        global LEFT_ARM
-        LEFT_ARM = "\\"
-    elif lives == 3:
-        global RIGHT_ARM
-        RIGHT_ARM = "/"
-    elif lives == 2:
-        global ABS
-        ABS = "|"
-    elif lives == 1:
-        global LEFT_LEG
-        LEFT_LEG = "/"
-    elif lives == 0:
-        global RIGHT_LEG
-        RIGHT_LEG = "\\"
-
+    i, v = matches.get(lives)
+    HANGMAN[i] = v
     return lives
 
 
@@ -88,9 +65,7 @@ def paint(guessed: List[str]):
 def update(word: str, lives: int, guessed: List[str]) -> int:
     paint(guessed)
     key = get_key()
-    if not key.isalpha():
-        lost_life(lives)
-    else:
+    if key.isalpha():
         positions = find_all_elements(word, key)
         if not positions:
             lives = lost_life(lives)

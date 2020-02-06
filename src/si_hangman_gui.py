@@ -47,6 +47,8 @@ class HangManGUI(QWidget):
         self.still_playing = True
         self.victory = False
 
+        self.setStyleSheet("background-color:white;")
+
         self.init_ui()
 
     def init_ui(self):
